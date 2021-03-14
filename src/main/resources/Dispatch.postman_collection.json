@@ -1,0 +1,859 @@
+{
+	"info": {
+		"_postman_id": "cabbb8be-d8cb-424a-9487-12893d26f3eb",
+		"name": "Dispatch",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "registerCompany",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\n\t\"username\":\"shakky\",\n\t\"phone\":\"1234567890\",\n\t\"email\":\"moin\",\n\t\"address\":\"bbsr\",\n\t\"branch\":\"bbsr\",\n\t\"password\":\"moin@235678\",\n\t\"company\":{\n\t\t\n\t\t\"companyName\":\"ABC Ind\",\n\t\t\"type\":{\n\t\t\t\"id\":1,\n\t\t\t\"entityName\":\"SHIPPER\"\n\t\t},\n\t\t\"branch\":{\n\t\t\t\"branchName\":\"Odisha Manf\",\n\t\t\t\"branchLocation\":\"Bhubaneswar\",\n\t\t\t\"isHeadOffice\":false\n\t\t}\n\t}\n\t\n\t\n\t\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/account/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"account",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registerUser",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\n\t\"username\":\"moinuser123\",\n\t\"email\":\"moin123@aol.com\",\n\t\"phone\":\"1234567890\",\n\t\"enabled\":true,\n\t\"password\":\"moinuser\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/rest/auth/registerUser",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"rest",
+						"auth",
+						"registerUser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registerCompany",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\n\t\"companyName\":\"Sushil Transporter1\",\n\t\"companyLoginName\":\"sushilco\",\n\t\"type\":{\n\t\t\"id\":2\n\t},\n\t\"authPerson\":\"Sushil Sharma\",\n\t\"address\":\"plot 1/78,Gridco Tower,8th Flr, Cuttack-9898\",\n\t\"branch\":[\n\t\t {\n\t\t \t\"branchName\":\"Quick &co\",\n\t\t \t\"branchLocation\":\"Cuttack\",\n\t\t \t\"isHeadOffice\":false\n\t\t }\n\t\t],\n\t\"email\":\"sushilco@transporter1.com\",\n\t\"phone\":\"9898889988\",\n\t\"password\":\"adminuser\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/registerCompany",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"registerCompany"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\n\t\"username\":\"moinuser123\",\n\t\n\t\"password\":\"moinuser\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/rest/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"rest",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "companyLogin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\n\t\"username\":\"sushilco\",\n\t\n\t\"password\":\"adminuser\",\n\t\"loginAs\":\"TRANSPORTER\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/rest/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"rest",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getResource",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic bW9pbnVzZXIxOm1vaW51c2Vy",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/secured",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"secured"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getCompanyCompDoc",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Basic Ym9iYnl1c2VyOm1vaW51c2Vy",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/getCompanyCompliceDocImage/6/PAN",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"getCompanyCompliceDocImage",
+						"6",
+						"PAN"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getTruckType",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Basic Ym9iYnl1c2VyOm1vaW51c2Vy",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/getTruckType",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"getTruckType"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "completeCompanyReg",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic dGFyYWZkYXIxOnNhbTE=",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \n    \"companyLoginName\":\"moinco\",\n    \"ownerDetails\":{\n        \n        \"fullName\":\"Milu Mittal\",\n        \"address\":\"VIP Street Lane,Noida\",\n        \"age\":50,\n        \"phone\":\"1266666561\",\n        \"experience\":20,\n        \"email\":\"chadda1@moinco.com\"\n    },\n    \"bankDetails\":{\n        \"bankName\":\"HDFC Bank Ltd\",\n        \"ifscCode\":\"HDFC86186\",\n        \"address\":\"Tech Towers,2nd Flr\",\n        \"micrCode\":\"MICRCODE0080\",\n        \"accountType\":\"current\",\n        \"accountNumber\":988988989,\n        \"panNumber\":\"AFE8787878UI\"\n        \n    },\n    \n    \"companyComplianceList\":[\n    \t{\n    \t\t\"documentName\":\"PAN\",\n    \t\t\"issuedBy\":\"Income Tax Dept.\",\n    \t\t\"city\":\"Bhubaneswar\",\n    \t\t\"validFrom\":\"2010-02-16\",\n    \t\t\"validTo\":\"2022-02-14\",\n    \t\t\"docNumber\":\"AFEUT7884R\",\n    \t\t\"comment\":\"OK\",\n    \t\t\"renewalRequired\":false\n    \t\t\n    \t\t\n    \t},\n    \t\t{\n    \t\t\"documentName\":\"Adhar\",\n    \t\t\"issuedBy\":\"UDDI Gove of India\",\n    \t\t\"city\":\"Bhubaneswar\",\n    \t\t\"validFrom\":\"2010-02-16\",\n    \t\t\"validTo\":\"2025-02-14\",\n    \t\t\"docNumber\":\"86186168AHGHG9808\",\n    \t\t\"comment\":\"OK\",\n    \t\t\"renewalRequired\":false\n    \t\t\n    \t\t\n    \t},\t{\n    \t\t\"documentName\":\"Registration\",\n    \t\t\"issuedBy\":\"REgistration Dept\",\n    \t\t\"city\":\"Bhubaneswar\",\n    \t\t\"validFrom\":\"2010-02-16\",\n    \t\t\"validTo\":\"2022-02-14\",\n    \t\t\"docNumber\":\"989889898889\",\n    \t\t\"comment\":\"OK\",\n    \t\t\"renewalRequired\":false\n    \t\t\n    \t\t\n    \t},\n    \t{\n    \t\t\"documentName\":\"GST\",\n    \t\t\"issuedBy\":\"Global Taxation Dept\",\n    \t\t\"city\":\"Bhubaneswar\",\n    \t\t\"validFrom\":\"2015-02-16\",\n    \t\t\"validTo\":\"2032-02-14\",\n    \t\t\"docNumber\":\"989889898889\",\n    \t\t\"comment\":\"OK\",\n    \t\t\"renewalRequired\":false\n    \t\t\n    \t\t\n    \t}\n    \t\n    \t\n    \t\n    \t\n    \t\n    \t\n    \t],\n    \t\n    \t\"staffList\": [ \n    \t\t{\n    \t\t\t\"username\":\"sohail123\",\n    \"password\":\"user123\",\n    \"role\":\"Office Executive\",\n    \"enabled\":true,\n    \t\t\n    \t\t\"userPersonalDetails\":\n    \t\t{\n    \t\t\t\"fullName\":\"Shaikh Sohail\",\n    \t\t\n    \t\t\t\"phone\":\"7676766760\",\n    \t\t\t\"address\":\"Stewart Colony\",\n    \t\t\t\"workLocation\":\"Bhubaneswar\",\n    \t\t\t\"dob\":\"1981-02-18\",\n    \t\t\t\"email\":\"moin@gmail.com\",\n    \t\t\t\"age\":\"40\",\n    \t\t\t\"sex\":\"male\",\n    \t\t\t\"experience\":\"15\",\n    \t\t\t\"bloodGroup\":\"B+\",\n    \t\t\t\"doj\":\"2007-09-18\"\n    \t\t\n    \t\t\t\n    \t\t\t\n    \t\t},\n    \t\t\n    \t\t \"userBankDetails\":{\n        \"bankName\":\"Dena Bank Ltd\",\n        \"ifscCode\":\"Dena86186\",\n        \"address\":\"Global Towers,2nd Flr\",\n        \"micrCode\":\"MICRCODE0080\",\n        \"accountType\":\"current\",\n        \"accountNumber\":990029092990,\n        \"panNumber\":\"AFE8787878UI\"\n        \n    }\n    \n    \t\t\n    \t\t},\n    \t\t\t{\n    \t\t\t\"username\":\"aqsha123\",\n    \"password\":\"user123\",\n    \"role\":\"Office Manager\",\n    \"enabled\":true,\n    \t\t\n    \t\t\"userPersonalDetails\":\n    \t\t{\n    \t\t\t\"fullName\":\"Shaikh Aqsha\",\n    \t\t\n    \t\t\t\"phone\":\"1234567890\",\n    \t\t\t\"address\":\"Lewis Square Colony\",\n    \t\t\t\"workLocation\":\"Bhubaneswar\",\n    \t\t\t\"dob\":\"1985-02-18\",\n    \t\t\t\"email\":\"bobby@gmail.com\",\n    \t\t\t\"age\":\"3\",\n    \t\t\t\"sex\":\"Female\",\n    \t\t\t\"experience\":\"2\",\n    \t\t\t\"bloodGroup\":\"b+\",\n    \t\t\t\"doj\":\"2010-09-18\"\n    \t\t\n    \t\t\t\n    \t\t\t\n    \t\t},\n    \t\t\n    \t\t \"userBankDetails\":{\n        \"bankName\":\"Baroda Bank Ltd\",\n        \"ifscCode\":\"BRDA86186\",\n        \"address\":\"Global Towers ,3d Flr\",\n        \"micrCode\":\"MICRCODE0080\",\n        \"accountType\":\"Saving\",\n        \"accountNumber\":990029092990,\n        \"panNumber\":\"AFE8787878UI\"\n        \n    }\n    \n    \t\t\n    \t\t},\n    \t\t\t{\n    \t\t\t\"username\":\"aroosh123\",\n    \"password\":\"user123\",\n    \"role\":\"CEO\",\n    \"enabled\":true,\n    \t\t\n    \t\t\"userPersonalDetails\":\n    \t\t{\n    \t\t\t\"fullName\":\"Shaikh Aroosh\",\n    \t\t\n    \t\t\t\"phone\":\"1234567890\",\n    \t\t\t\"address\":\"Infotech Global\",\n    \t\t\t\"workLocation\":\"Pune\",\n    \t\t\t\"dob\":\"1988-02-18\",\n    \t\t\t\"email\":\"bobby@gmail.com\",\n    \t\t\t\"age\":\"3\",\n    \t\t\t\"sex\":\"male\",\n    \t\t\t\"experience\":\"2\",\n    \t\t\t\"bloodGroup\":\"b+\",\n    \t\t\t\"doj\":\"2010-09-18\"\n    \t\t\n    \t\t\t\n    \t\t\t\n    \t\t},\n    \t\t\n    \t\t \"userBankDetails\":{\n        \"bankName\":\"CITI Bank Ltd\",\n        \"ifscCode\":\"BRDA86186\",\n        \"address\":\"Global Towers ,3d Flr\",\n        \"micrCode\":\"MICRCODE0080\",\n        \"accountType\":\"Saving\",\n        \"accountNumber\":990029092990,\n        \"panNumber\":\"AFE8787878UI\"\n        \n    }\n    \n    \t\t\n    \t\t}\n    \t\t]\n    \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/completeCompanyReg",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"completeCompanyReg"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "uploadCompanyCompDocs",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Basic dGFyYWZkYXIxOnNhbTE=",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "picture",
+							"type": "file",
+							"src": "/Users/shaikhtarafdar/Desktop/book-image/8.png"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/add/companycomp/image/6/GST",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"add",
+						"companycomp",
+						"image",
+						"6",
+						"GST"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAgreementDoc",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic dGFyYWZkYXIxOnNhbTE=",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\n\t\"bankDetails\":{\n\t\t\n\t\t\"bankName\":\"Axis\",\n\t\t\"ifscCode\":\"IFA54545\"\n\t},\n\t\"ownerDetails\":{\n\t\t\n\t\t\"fullName\":\"MAinuddin\",\n\t\t\"address\":\"Kadab\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/getComplianceDocPdf",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"getComplianceDocPdf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getCompDocsByCompId",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic dGFyYWZkYXIxOnNhbTE=",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\n\t\"bankDetails\":{\n\t\t\n\t\t\"bankName\":\"Axis\",\n\t\t\"ifscCode\":\"IFA54545\"\n\t},\n\t\"ownerDetails\":{\n\t\t\n\t\t\"fullName\":\"MAinuddin\",\n\t\t\"address\":\"Kadab\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/getCompanyCompliceDocList/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"getCompanyCompliceDocList",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createBid",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"companyId\":1,\n\t\"bidStartDate\":\"2021-03-14\",\n\t\t\"bidEndDate\":\"2021-03-20\",\n\t\t\t\"bidCloseDate\":\"2021-03-21\",\n\t\t\t\"contractStDt\":\"2021-04-07\",\n\t\t\t\"contractEndDt\":\"2022-04-07\",\n\t\t\t\"sourceLOcation\":\"Pune\",\n            \"sourceZoneId\":1,\n\t\t\t\"targetLocation\":\"Chennai\",\n            \"targetZoneId\":2,\n            \"truckTypeId\":5,\n            \"tripNumber\":300,\n\t\t\n\t\t\t\"targetPrice\":10000\n\t\t\t\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/createBid",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"createBid"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "negotiateQuote",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"bidId\":16,\n    \"quoteId\":16,\n    \"negotiatePrice\":3000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/negotiateBid",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"negotiateBid"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "rejectQuoteById",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"companyId\":1,\n\t\"bidStartDate\":\"2021-03-07\",\n\t\t\"bidEndDate\":\"2021-03-12\",\n\t\t\t\"bidCloseDate\":\"2021-03-14\",\n\t\t\t\"contractStDt\":\"2021-04-07\",\n\t\t\t\"contractEndDt\":\"2022-04-07\",\n\t\t\t\"sourceLOcation\":\"Delhi\",\n\t\t\t\"targetLocation\":\"Noida\",\n\t\t\t\"isDropReq\":true,\n\t\t\t\"dropLocation\":\"pune\",\n\t\t\t\"targetPrice\":12000\n\t\t\t\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/rejectQuoteById/14",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"rejectQuoteById",
+						"14"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "checkQuoteByCompanyId",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"companyId\":1,\n\t\"bidStartDate\":\"2021-03-07\",\n\t\t\"bidEndDate\":\"2021-03-12\",\n\t\t\t\"bidCloseDate\":\"2021-03-14\",\n\t\t\t\"contractStDt\":\"2021-04-07\",\n\t\t\t\"contractEndDt\":\"2022-04-07\",\n\t\t\t\"sourceLOcation\":\"Delhi\",\n\t\t\t\"targetLocation\":\"Noida\",\n\t\t\t\"isDropReq\":true,\n\t\t\t\"dropLocation\":\"pune\",\n\t\t\t\"targetPrice\":12000\n\t\t\t\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/checkQuoteByCompanyId/8",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"checkQuoteByCompanyId",
+						"8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "receiveBIdByTrans1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/receiveBids/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"receiveBids",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "receiveBIdByTrans2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/receiveBids/5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"receiveBids",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createQuoteByTran1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\n\t\"bidFromId\":1,\n\t\"quoteById\":8,\n\t\"bidId\":16,\n\t\"quotePrice\":5000.0\n\t\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/createQuote",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"createQuote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "receiveQuotesbyId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/getQuotes/1/16",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"getQuotes",
+						"1",
+						"16"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "acceptQuoteById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/acceptQuote/1/14/15",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"acceptQuote",
+						"1",
+						"14",
+						"15"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addBranch",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"compId\":1,\n\"branchName\":\"Carry Co Kalinga Vihar \",\n\"location\":\"Bhubaneswar\",\n\"address\":\"Near Damana ,KV\",\n\"zoneId\":2,\n\"pincode\":\"751007\",\n\"isHeadOff\":false\n\n\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/addBranch/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"addBranch",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
