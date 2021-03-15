@@ -1,5 +1,6 @@
 package com.dispatch.application.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.springframework.context.annotation.Scope;
 
 import javax.persistence.*;
@@ -54,18 +55,25 @@ public class Truck implements Serializable {
         this.quantity = quantity;
     }
 
-    public Company getOwnedBy() {
-        return ownedBy;
-    }
 
-    public void setOwnedBy(Company ownedBy) {
-        this.ownedBy = ownedBy;
-    }
 
     private String regNumber;
 
     private BigDecimal quantity;
 
-    @OneToOne(cascade = CascadeType.MERGE)
-    private Company ownedBy;
+    public Company getCompany() {
+        return ownerCompany;
+    }
+
+    public void setCompany(Company ownerCompany) {
+        this.ownerCompany = ownerCompany;
+    }
+
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER,cascade= CascadeType.ALL)
+    @JoinColumn(name = "company_id")
+
+    private Company ownerCompany;
+
+
 }

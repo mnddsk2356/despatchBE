@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 public interface UserService {
 
     Users findByUsername(String username);
+
     Users validLogin(LoginRequest loginRequest);
     public Users findByEmail(String email);
     void save(Users user);

@@ -7,16 +7,17 @@ import com.dispatch.application.repository.*;
 import com.dispatch.application.service.BidService;
 import com.dispatch.application.service.CompanyService;
 import com.dispatch.application.service.QuoteService;
+
 import com.dispatch.application.util.DateFormatter;
 import com.dispatch.application.util.FileUploadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,11 +30,15 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RequestMapping("/survey/resource")
@@ -60,6 +65,8 @@ public class MainController {
 	BidService bidService;
 	@Autowired
 	QuoteService quoteService;
+	@Autowired
+	UserRepository userRepository;
 
 	@GetMapping
 
@@ -197,6 +204,26 @@ public class MainController {
 
 
 		String uploadDir = "uploads/company/" + companyId+"/";
+
+		FileUploadUtil.saveFile(uploadDir, filename+"."+blobExtension, multipartFile1);
+
+
+		return "Upload Success";
+
+	}
+
+	@RequestMapping(value = "/add/usercomp/image/{companyId}/{filename}", method = RequestMethod.POST)
+	public String uploadUserComp(
+			@RequestParam("picture") MultipartFile multipartFile1, @PathVariable("companyId") Long companyId,
+			@PathVariable("filename") String filename,
+			HttpServletResponse response, HttpServletRequest request
+	) throws IOException {
+		//String blobExtension = StringUtils.cleanPath(multipartFile1.getOriginalFilename().split(".")[1]);
+
+		String blobExtension = "png";//multipartFile1.getOriginalFilename().split("\\.")[1];
+
+
+		String uploadDir = "uploads/company/" + companyId+"/staff_compliance/";
 
 		FileUploadUtil.saveFile(uploadDir, filename+"."+blobExtension, multipartFile1);
 
@@ -424,6 +451,66 @@ public class MainController {
 
 	}
 
+	@PostMapping("/addTrucks")
+
+	public String  addTrucks(@RequestBody TruckRequest truckRequest){
+
+		Company company = companyService.findByCompanyById(truckRequest.getCompanyId());
+
+		if(company.getType().getEntityName().equals("SHIPPER")){
+			return "SHIPPER Cant add Truck";
+
+		}
+
+		Truck truck = new Truck();
+		Set<Truck> truckList = company.getTruckSet().size()>0?company.getTruckSet():new HashSet<>();
+
+		truck.setCompany(company);
+		truck.setTruckTypeId(truckRequest.getTruckTypeId());
+		truck.setRegNumber(truckRequest.getTruckRegNumber());
+		truckList.add(truck);
+		company.setTruckSet(truckList);
+
+		companyService.save(company);
+
+		return "Truck added successfully";
+
+	}
+
+	@PostMapping("/addStaffs")
+
+	public String  addStaffs(@RequestBody StaffRequest staffRequest){
+
+		Company company = companyService.findByCompanyById(staffRequest.getCompId());
+
+		Users user = new Users();
+		Set<Users> staffList = company.getStaffList().size()>0?company.getStaffList():new HashSet<>();
+		List<UserCompliance> userComplianceList = new ArrayList<>();
+		user.setUserPersonalDetails(staffRequest.getUserPersonalDetails());
+		user.setUserBankDetails(staffRequest.getUserBankDetails());
+		//user.setUserComplainceList(staffRequest.getUserComplianceList());
+		for(UserCompliance userCompliance:staffRequest.getUserComplianceList()){
+			UserCompliance userCompliance1 = userCompliance;
+			userCompliance1.setUser(user);
+			userComplianceList.add(userCompliance1);
+		}
+		user.setUserComplainceList(userComplianceList);
+		user.setRole(staffRequest.getRoleName());
+		String encryptedPassword = SecurityUtility.passwordEncoder().encode(staffRequest.getPassword());
+		user.setPassword(encryptedPassword);
+		user.setCompany(company);
+		staffList.add(user);
+		company.setStaffList(staffList);
+
+		companyService.save(company);
+
+		return "Employee added successfully";
+
+	}
+	
+	
+
+
 	@GetMapping("/acceptQuote/{compId}/{bidId}/{quoteId}")
 
 	public BidMaster acceptQuote(@PathVariable("compId") Long companyId ,@PathVariable("bidId") Long bidId,@PathVariable("quoteId") Long quoteId){
@@ -475,6 +562,50 @@ public class MainController {
 		return company;
 	}
 	
+	@GetMapping(value="/getCompanyNotifications/{compId}")
 
+	public List<Notification> getCompanyNotifications(@PathVariable("compId") Long compId) throws ParseException {
+
+		Company company = companyService.findByCompanyById(compId);
+
+		Set<CompanyCompliance> companyComplianceList = company.getCompanyComplianceList();
+		List<Notification> notificationList = new ArrayList<>();
+		for(CompanyCompliance companyCompliance:companyComplianceList){
+			Notification notification = new Notification();
+				if(DateFormatter.isExpiredDocument(new Date(),companyCompliance.getValidTo())){
+					notification.setMessage("Renewal Required for "+companyCompliance.getDocumentName());
+				}
+				if(DateFormatter.remindSevenDaysBeforeExpiry(new Date(),companyCompliance.getValidTo())){
+					notification.setMessage("Kindly Renew your "+companyCompliance.getDocumentName()+" it is about to expiry on "+companyCompliance.getValidTo());
+				}
+				if(notification.getMessage()!=null) {
+					notificationList.add(notification);
+				}
+		}
+return notificationList;
+	}
+
+	@GetMapping(value="/getEmployeeNotifications/{userId}")
+
+	public List<Notification> getEmployeeNotifications(@PathVariable("userId") Long userId) throws ParseException {
+
+		List<Users> users =userRepository.findAll().stream().filter(x->x.getId()==userId).collect(Collectors.toList());
+
+		List<UserCompliance> userComplianceList = users.get(0).getUserComplainceList();
+		List<Notification> notificationList = new ArrayList<>();
+		for(UserCompliance userCompliance:userComplianceList){
+			Notification notification = new Notification();
+			if(DateFormatter.isExpiredDocument(new Date(),userCompliance.getValidTo())){
+				notification.setMessage("Renewal Required for "+userCompliance.getDocumentName());
+			}
+			if(DateFormatter.remindSevenDaysBeforeExpiry(new Date(),userCompliance.getValidTo())){
+				notification.setMessage("Kindly Renew your "+userCompliance.getDocumentName()+" it is about to expiry on "+userCompliance.getValidTo());
+			}
+			if(notification.getMessage()!=null) {
+				notificationList.add(notification);
+			}
+		}
+		return notificationList;
+	}
 
 }

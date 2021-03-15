@@ -7,7 +7,8 @@ import java.util.Date;
 public   class DateFormatter {
 
     public final static String dateFormat="yyyy-MM-dd";
-    public final static String dateAndTimeFormat="yyy-MM-dd hh:mm:ss aa";
+    public final static String dateAndTimeFormat="yyy-MM-dd hh:mm:ss";
+    static SimpleDateFormat formatter = new SimpleDateFormat(dateAndTimeFormat);
 
     public  static  String formatDate(Date date) {
         //Date date = new Date();
@@ -28,6 +29,22 @@ return strDate;
     public static boolean isDateInBetweenIncludingEndPoints(final Date min, final Date max, final Date date){
         return !(date.before(min) || date.after(max));
     }
+    public static boolean remindSevenDaysBeforeExpiry( final Date date , final Date max) throws ParseException {
+
+     Date minDate =  new Date(max.getTime()-7*24*60*60*1000); // 7 days before expiry
+     Date maxDate = max;
+        return !(date.before(minDate) || date.after(maxDate));
+    }
+
+    public static boolean isExpiredDocument(Date currentDate , Date validToDate) {
+            boolean flag = false;
+        if(currentDate.compareTo(validToDate) > 0) {
+            flag = true;
+        }
+        return flag;
+    }
+
+
 
  /*   public static void main(String[] args) throws ParseException {
 

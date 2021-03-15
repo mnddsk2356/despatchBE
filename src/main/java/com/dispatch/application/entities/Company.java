@@ -216,6 +216,18 @@ public class Company implements Serializable {
 
     private Set<Branch> branch;
 
+    @OneToMany(mappedBy = "ownerCompany" ,fetch = FetchType.EAGER,cascade= CascadeType.ALL)
+    @JsonManagedReference
+
+    private Set<Truck> truckSet;
+
+    public Set<Truck> getTruckSet() {
+        return truckSet;
+    }
+
+    public void setTruckSet(Set<Truck> truckSet) {
+        this.truckSet = truckSet;
+    }
 
     public Agreement getAgreement() {
         return agreement;
