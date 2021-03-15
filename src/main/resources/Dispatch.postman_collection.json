@@ -429,6 +429,112 @@
 			"response": []
 		},
 		{
+			"name": "addTrucks",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Basic dGFyYWZkYXIxOnNhbTE=",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"companyId\":5,\n\"truckTypeId\":5,\n\"truckRegNumber\":\"OD02EE 1789\"\n\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/addTrucks",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"addTrucks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addStaff",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Basic dGFyYWZkYXIxOnNhbTE=",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n\"compId\":5,\n\"roleName\":\"Driver\",\n\"password\":\"Testuser@123\",\n\"userComplianceList\":[\n\n    {\n    \t\t\"documentName\":\"Adhar\",\n    \t\t\"issuedBy\":\"UDDI Gove of India\",\n    \t\t\"city\":\"Bhubaneswar\",\n    \t\t\"validFrom\":\"2010-02-16\",\n    \t\t\"validTo\":\"2025-02-14\",\n    \t\t\"docNumber\":\"86186168AHGHG9808\",\n    \t\t\"comment\":\"OK\",\n    \t\t\"renewalRequired\":false\n    \t\t\n    \t\t\n    \t},\t{\n    \t\t\"documentName\":\"Driving License\",\n    \t\t\"issuedBy\":\"RTO Dept\",\n    \t\t\"city\":\"Bhubaneswar\",\n    \t\t\"validFrom\":\"2010-02-16\",\n    \t\t\"validTo\":\"2022-02-14\",\n    \t\t\"docNumber\":\"989889898889\",\n    \t\t\"comment\":\"OK\",\n    \t\t\"renewalRequired\":false\n    \t\t\n    \t\t\n    \t}\n\n\n],\n\n\"userPersonalDetails\":{\n    \"fullName\":\"Nandu Lal\",\n    \"address\":\"Bani Vihar\",\n    \"phone\":1234567890,\n    \"email\":\"chandu@gmail.com\"\n    \n},\n\"userBankDetails\":{\n     \"bankName\":\"Dena Bank Ltd\",\n        \"ifscCode\":\"Dena86186\",\n        \"address\":\"Global Towers,2nd Flr\",\n        \"micrCode\":\"MICRCODE0080\",\n        \"accountType\":\"current\",\n        \"accountNumber\":990029092990,\n        \"panNumber\":\"AFE8787878UI\"\n}\n\n\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/addStaffs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"addStaffs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "getAgreementDoc",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -650,6 +756,88 @@
 						"resource",
 						"rejectQuoteById",
 						"14"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getCompanyNotifications",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"companyId\":1,\n\t\"bidStartDate\":\"2021-03-07\",\n\t\t\"bidEndDate\":\"2021-03-12\",\n\t\t\t\"bidCloseDate\":\"2021-03-14\",\n\t\t\t\"contractStDt\":\"2021-04-07\",\n\t\t\t\"contractEndDt\":\"2022-04-07\",\n\t\t\t\"sourceLOcation\":\"Delhi\",\n\t\t\t\"targetLocation\":\"Noida\",\n\t\t\t\"isDropReq\":true,\n\t\t\t\"dropLocation\":\"pune\",\n\t\t\t\"targetPrice\":12000\n\t\t\t\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/getCompanyNotifications/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"getCompanyNotifications",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getEmployeeNotifications",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"companyId\":1,\n\t\"bidStartDate\":\"2021-03-07\",\n\t\t\"bidEndDate\":\"2021-03-12\",\n\t\t\t\"bidCloseDate\":\"2021-03-14\",\n\t\t\t\"contractStDt\":\"2021-04-07\",\n\t\t\t\"contractEndDt\":\"2022-04-07\",\n\t\t\t\"sourceLOcation\":\"Delhi\",\n\t\t\t\"targetLocation\":\"Noida\",\n\t\t\t\"isDropReq\":true,\n\t\t\t\"dropLocation\":\"pune\",\n\t\t\t\"targetPrice\":12000\n\t\t\t\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8082/survey/resource/getEmployeeNotifications/43",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"survey",
+						"resource",
+						"getEmployeeNotifications",
+						"43"
 					]
 				}
 			},
