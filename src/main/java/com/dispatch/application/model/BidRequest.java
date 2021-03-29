@@ -85,21 +85,7 @@ public class BidRequest {
         this.targetLocation = targetLocation;
     }
 
-    public boolean isDropReq() {
-        return isDropReq;
-    }
 
-    public void setDropReq(boolean dropReq) {
-        isDropReq = dropReq;
-    }
-
-    public String getDropLocation() {
-        return dropLocation;
-    }
-
-    public void setDropLocation(String dropLocation) {
-        this.dropLocation = dropLocation;
-    }
 
 
 
@@ -148,8 +134,7 @@ public class BidRequest {
 
     private int targetZoneId;
 
-    @JsonProperty
-    private boolean isDropReq;
+
 
     public int getSourceZoneId() {
         return sourceZoneId;
@@ -180,7 +165,6 @@ public class BidRequest {
 
 
 
-    private String dropLocation;
 
 
 

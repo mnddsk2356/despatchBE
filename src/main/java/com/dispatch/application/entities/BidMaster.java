@@ -190,28 +190,7 @@ public class BidMaster implements Serializable {
 
     private Date contrcatEndDt;
 
-    public String getDropLocation() {
-        return dropLocation;
-    }
-
-    public void setDropLocation(String dropLocation) {
-        this.dropLocation = dropLocation;
-    }
-
     private String status;
-
-    private String dropLocation;
-
-    public boolean isDropReq() {
-        return isDropReq;
-    }
-
-    public void setDropReq(boolean dropReq) {
-        isDropReq = dropReq;
-    }
-
-    @JsonProperty
-    private boolean isDropReq;
 
     private BigDecimal targetPrice;
 

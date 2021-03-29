@@ -35,8 +35,7 @@ public class BidServiceImpl implements  BidService {
         bidMaster.setContrcatEndDt(bidRequest.getContractEndDt());
         bidMaster.setShipFrom(bidRequest.getSourceLOcation());
         bidMaster.setShipTo(bidRequest.getTargetLocation());
-        bidMaster.setDropLocation(bidRequest.isDropReq()?bidRequest.getDropLocation():null);
-        bidMaster.setDropReq(bidRequest.isDropReq());
+
         bidMaster.setTargetPrice(bidRequest.getTargetPrice());
         bidMaster.setShipFromZoneId(bidRequest.getSourceZoneId());
         bidMaster.setShipToZoneId(bidRequest.getTargetZoneId());

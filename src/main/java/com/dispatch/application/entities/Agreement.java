@@ -73,5 +73,14 @@ public class Agreement implements Serializable {
 
     private int issuingOfficerId;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Quote quote;
 
+    public Quote getQuote() {
+        return quote;
+    }
+
+    public void setQuote(Quote quote) {
+        this.quote = quote;
+    }
 }

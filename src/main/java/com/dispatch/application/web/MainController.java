@@ -9,6 +9,7 @@ import com.dispatch.application.service.CompanyService;
 import com.dispatch.application.service.QuoteService;
 
 import com.dispatch.application.util.DateFormatter;
+import com.dispatch.application.util.EmailUtil;
 import com.dispatch.application.util.FileUploadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.activation.FileTypeMap;
@@ -67,6 +69,8 @@ public class MainController {
 	QuoteService quoteService;
 	@Autowired
 	UserRepository userRepository;
+
+
 
 	@GetMapping
 
@@ -392,6 +396,24 @@ public class MainController {
 				filter(bidmast->bidmast.getId()==quoteRequest.getBidId()).
 				collect(Collectors.toList());
 		BidMaster bidMaster = bidMasterList.get(0);
+
+		bidMasterList = bidService.getBidList().stream().
+				filter(x-> !x.getStatus().equals("Accepted") &&
+						DateFormatter.isDateInBetweenIncludingEndPoints(
+								x.getBidStartDate(),
+								x.getBidCloseDate(),
+								new Date()
+						) && x.getId()== quoteRequest.getBidId()
+
+				).collect(Collectors.toList());
+		if(bidMasterList.size()==0){
+			LOG.error("Sorry No active bids, or you are late");
+			return new ResponseEntity("Sorry No active bids, or you are late",HttpStatus.OK);
+
+
+		}
+
+
 		List<Quote> quoteList = new ArrayList<>();
 		Quote quote = new Quote();
 		Company bidBy = new Company();
@@ -444,7 +466,6 @@ public class MainController {
 		resultBidMaster.setShipToZoneId(bidMaster.getShipToZoneId());
 		resultBidMaster.setTripAssigned(bidMaster.getTripAssigned());
 		resultBidMaster.setTruckType(bidMaster.getTruckType());
-		resultBidMaster.setDropLocation(bidMaster.isDropReq()?bidMaster.getDropLocation():null);
 		resultBidMaster.setQuoteList(firstThreeQuotesWithMinQuotePrice);
 
 		return resultBidMaster;
@@ -517,26 +538,72 @@ public class MainController {
 
 		BidMaster bidMaster = bidRepository.findById(bidId.intValue()).get();
 		List<Quote> quoteList = bidMaster.getQuoteList();
+		Set<Quote> uniqueQuoteList = new HashSet<Quote>(quoteList);
 
-		//quoteList = quoteList.stream().filter(x->x.getQuoteById() == quoteId).collect(Collectors.toList());
-		Quote quote = quoteList.get(0);
+
 		List<Quote> resultQuoteList = new ArrayList<>();
-		for(Quote quote1 :quoteList ){
+		for(Quote quote1 :uniqueQuoteList ){
 
-			if(quote1.getQuoteById() == quoteId){
+			if(quote1.getId() == quoteId){
 				quote1.setQuoteStatus("Accepted");
 				resultQuoteList.add(quote1);
 			}else{
 				resultQuoteList.add(quote1);
 			}
 		}
-		quote.setQuoteStatus("Accepted");
+
 		bidMaster.setStatus("Accepted");
 		bidMaster.setQuoteList(resultQuoteList);
 
 		BidMaster resultBidMaster = bidRepository.save(bidMaster);
 
 		return resultBidMaster;
+
+	}
+
+	@GetMapping(value="listOfIntendedBids")
+
+	public List<BidMaster> listOfIntendedBids(){
+
+		List<BidMaster> bidMasterList = bidService.getBidList().stream().
+				filter(bid->bid.getStatus().equals("Accepted")).collect(Collectors.toList());
+		LOG.info("List of Intended Bids {} ",bidMasterList.size());
+		return bidMasterList;
+
+	}
+
+	@GetMapping(value="processAgreementByBidId/{bidId}")
+
+	public ResponseEntity<String> processAgreementByBidId(@PathVariable("bidId") Long bidId){
+
+		BidMaster bidMaster = bidRepository.findById(bidId.intValue()).get();
+
+
+
+		List<Quote> quotes = bidMaster.getQuoteList();
+		Set<Quote> quoteList = new HashSet<Quote>(quotes).stream().
+				filter(x->x.getQuoteStatus().equals("Accepted")).collect(Collectors.toSet());
+
+		for(Quote quote : quoteList){
+
+			AgreementRequest agreementRequest = new AgreementRequest();
+			agreementRequest.setShipperId(bidMaster.getBidBy().getId());
+			agreementRequest.setSource(bidMaster.getShipFrom());
+			agreementRequest.setDestination(bidMaster.getShipTo());
+			agreementRequest.setAmount(quote.getNegotiatePrice()!=null?
+					quote.getNegotiatePrice():quote.getQuotePrice());
+			Company company = companyService.findByCompanyById(quote.getQuoteById());
+			agreementRequest.setTransporterComp(company.getCompanyName());
+			agreementRequest.setTransporterCompEmail(company.getEmail());
+			agreementRequest.setTripAssigned(quote.getTripAssigned());
+			agreementRequest.setFromDate(bidMaster.getContractStDt());
+			agreementRequest.setToDate(bidMaster.getContrcatEndDt());
+			EmailUtil.sendAgreement(agreementRequest);
+
+
+		}
+
+  return new ResponseEntity<>("Success",HttpStatus.OK);
 
 	}
 	
@@ -607,5 +674,42 @@ return notificationList;
 		}
 		return notificationList;
 	}
+
+	@GetMapping(value="/getBidListByCompId/{compId}")
+	public List<BidMaster> getBidListByCompId (@PathVariable("compId") Long compId)  {
+
+		List<BidMaster> bidMasterList = bidRepository.findAll().stream()
+				.filter(x->x.getStatus().equals("Accepted")
+						&& x.getBidBy().getId()==compId).collect(Collectors.toList());
+
+		return bidMasterList;
+
+	}
+
+	@GetMapping(value="/getQuoteListByCompId/{bidId}")
+	public List<Quote> getQuoteListByCompId (@PathVariable("bidId") Long bidId)  {
+
+		List<Quote> quoteList = quoteService.quoteList().stream()
+				.filter(x->x.getQuoteStatus().equals("Accepted")
+						&& x.getBidMaster().getId()==bidId).collect(Collectors.toList());
+
+		return quoteList;
+
+	}
+
+	@GetMapping(value="/getCallFromOtherService")
+
+	public ResponseEntity<String> getCallFromOtherService(){
+
+		RestTemplate restTemplate = new RestTemplate();
+		Message message = new Message();
+		message.setMessage("Hi");
+		ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:9090/api/survey/getMessage", message,String.class);
+		HttpStatus statusCode = response.getStatusCode();
+		LOG.info("Status",statusCode);
+		return response;
+	}
+
+
 
 }
