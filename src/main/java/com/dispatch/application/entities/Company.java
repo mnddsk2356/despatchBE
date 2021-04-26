@@ -152,13 +152,7 @@ public class Company implements Serializable {
         this.companyComplianceList = companyComplianceList;
     }
 
-    public Set<Users> getStaffList() {
-        return staffList;
-    }
 
-    public void setStaffList(Set<Users> staffList) {
-        this.staffList = staffList;
-    }
 
     public BankDetails getBankDetails() {
         return bankDetails;
@@ -206,10 +200,7 @@ public class Company implements Serializable {
 
     private Set<CompanyCompliance> companyComplianceList;
 
-    @OneToMany(mappedBy = "company" ,fetch = FetchType.EAGER,cascade= CascadeType.ALL)
-    @JsonManagedReference
 
-    private Set<Users> staffList;
 
     @OneToMany(mappedBy = "company" ,fetch = FetchType.EAGER,cascade= CascadeType.ALL)
     @JsonManagedReference

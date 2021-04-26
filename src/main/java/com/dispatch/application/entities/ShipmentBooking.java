@@ -17,11 +17,29 @@ public class ShipmentBooking implements Serializable {
     private int id ;
 
     @Column(unique = true)
-    private long bookingNumber ;
+    private String bookingNumber ;
 
     private String sourceLocation;
 
     private String destination;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Parking getParking() {
+        return parking;
+    }
+
+    public void setParking(Parking parking) {
+        this.parking = parking;
+    }
+
+    private String status;
 
     private String shipmentType;
 
@@ -71,9 +89,65 @@ public class ShipmentBooking implements Serializable {
 
     private String vehicleNumber;
 
-    private int driverId;
+    private Long driverId;
 
-    private int logisticOfficerId;
+    private Long logisticOfficerId;
+
+    public Long getFinanceExecutiveId() {
+        return financeExecutiveId;
+    }
+
+    public void setFinanceExecutiveId(Long financeExecutiveId) {
+        this.financeExecutiveId = financeExecutiveId;
+    }
+
+    private Long financeExecutiveId;
+
+    public Long getBayManagerId() {
+        return bayManagerId;
+    }
+
+    public void setBayManagerId(Long bayManagerId) {
+        this.bayManagerId = bayManagerId;
+    }
+
+    private Long yardManagerId;
+
+    private Long bayManagerId;
+
+    public Long getYardManagerId() {
+        return yardManagerId;
+    }
+
+    public void setYardManagerId(Long yardManagerId) {
+        this.yardManagerId = yardManagerId;
+    }
+
+    public int getSourceBranchId() {
+        return sourceBranchId;
+    }
+
+    public void setSourceBranchId(int sourceBranchId) {
+        this.sourceBranchId = sourceBranchId;
+    }
+
+    public int getTargetBranchId() {
+        return targetBranchId;
+    }
+
+    public void setTargetBranchId(int targetBranchId) {
+        this.targetBranchId = targetBranchId;
+    }
+    public Date getRelaesedFromBayDateTime() {
+        return relaesedFromBayDateTime;
+    }
+
+    public void setRelaesedFromBayDateTime(Date relaesedFromBayDateTime) {
+        this.relaesedFromBayDateTime = relaesedFromBayDateTime;
+    }
+    private int sourceBranchId;
+
+    private int targetBranchId;
 
     public String getSourceLocation() {
         return sourceLocation;
@@ -113,11 +187,11 @@ public class ShipmentBooking implements Serializable {
         this.id = id;
     }
 
-    public long getBookingNumber() {
+    public String getBookingNumber() {
         return bookingNumber;
     }
 
-    public void setBookingNumber(long bookingNumber) {
+    public void setBookingNumber(String bookingNumber) {
         this.bookingNumber = bookingNumber;
     }
 
@@ -169,19 +243,19 @@ public class ShipmentBooking implements Serializable {
         this.vehicleNumber = vehicleNumber;
     }
 
-    public int getDriverId() {
+    public Long getDriverId() {
         return driverId;
     }
 
-    public void setDriverId(int driverId) {
+    public void setDriverId(Long driverId) {
         this.driverId = driverId;
     }
 
-    public int getLogisticOfficerId() {
+    public Long getLogisticOfficerId() {
         return logisticOfficerId;
     }
 
-    public void setLogisticOfficerId(int logisticOfficerId) {
+    public void setLogisticOfficerId(Long logisticOfficerId) {
         this.logisticOfficerId = logisticOfficerId;
     }
 
@@ -193,11 +267,11 @@ public class ShipmentBooking implements Serializable {
         this.companyId = companyId;
     }
 
-    public int getGateKeeperId() {
+    public Long getGateKeeperId() {
         return gateKeeperId;
     }
 
-    public void setGateKeeperId(int gateKeeperId) {
+    public void setGateKeeperId(Long gateKeeperId) {
         this.gateKeeperId = gateKeeperId;
     }
 
@@ -274,7 +348,7 @@ public class ShipmentBooking implements Serializable {
         this.audit = audit;
     }
 
-    private int gateKeeperId;
+    private Long gateKeeperId;
 
     private boolean dropRequired;
 
@@ -285,6 +359,8 @@ public class ShipmentBooking implements Serializable {
     private BigDecimal amountPaid;
 
     private String comment;
+
+
 
     private Date bookingStartDate;
 
@@ -297,6 +373,8 @@ public class ShipmentBooking implements Serializable {
     private String truckType;
 
     private Date arrivalDateTime;
+
+    private Date relaesedFromBayDateTime;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Parking parking;

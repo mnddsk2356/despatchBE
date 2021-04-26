@@ -78,6 +78,17 @@ public class EmailUtil {
             String  path = "/Agreement.pdf";
                 String uploadDir = "uploads/company/" +agreementRequest.getShipperId()+"/Agreement/"+agreementRequest.getTransporterComp()+path;
 
+            // create document
+            File f = new File(uploadDir);
+            if(f.createNewFile()){
+                System.out.println(uploadDir+" File Created");
+            }else System.out.println("File "+uploadDir+" already exists");
+
+            //file name only
+            f = new File("Agreement.pdf");
+            if(f.createNewFile()){
+                System.out.println("Aggrement.pdf File Created in Project root directory");
+            }else System.out.println("File Aggrement.pdf already exists in the project root directory");
 
            // byte[] bytes = outputStream.toByteArray();
 
@@ -200,13 +211,21 @@ public class EmailUtil {
 
     }*/
 
-    public static void writeHeaderFooterPdf(AgreementRequest agreementRequest) throws FileNotFoundException, DocumentException {
+    public static void writeHeaderFooterPdf(AgreementRequest agreementRequest) throws IOException, DocumentException {
 
         String  path = "/Agreement.pdf";
         String uploadDir = "uploads/company/" +agreementRequest.getShipperId()+"/Agreement/"+agreementRequest.getTransporterComp()+path;
         // create document
+        File f = new File(uploadDir);
+
+       // File f = new File("somedirname1/somedirname2/somefilename");
+        if (!f.getParentFile().exists())
+            f.getParentFile().mkdirs();
+        if (!f.exists())
+            f.createNewFile();
+
         Document document = new Document(PageSize.A4, 36, 36, 90, 36);
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(uploadDir));
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(f.getAbsoluteFile()));
 
         // add header and footer
         HeaderFooterPageEvent event = new HeaderFooterPageEvent();
@@ -228,6 +247,43 @@ public class EmailUtil {
         document.add(new Paragraph("For this service "+agreementRequest.getTransporterComp()+" will paid "+agreementRequest.getTripAssigned() * agreementRequest.getAmount().intValue()+"  INR. Any loss or damage to Material will be pay by transporter ."));
         rectMargin(writer);
         rect(writer);
+
+        /** Create Shipper & Transporter Address **/
+
+//specify column widths
+        //special font sizes
+        Font bfBold12 = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD, new BaseColor(0, 0, 0));
+        Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 12);
+        float[] columnWidths = {1.5f, 2f, 5f, 2f};
+        //create PDF table with the given widths
+        PdfPTable table = new PdfPTable(columnWidths);
+        // set table width a percentage of the page width
+        table.setWidthPercentage(90f);
+
+        //insert column headings
+        insertCell(table, "Order No", Element.ALIGN_RIGHT, 1, bfBold12);
+        insertCell(table, "Account No", Element.ALIGN_LEFT, 1, bfBold12);
+        insertCell(table, "Account Name", Element.ALIGN_LEFT, 1, bfBold12);
+        insertCell(table, "Order Total", Element.ALIGN_RIGHT, 1, bfBold12);
+        table.setHeaderRows(1);
+
+
+        System.out.println("Table created successfully..");
+        System.out.println("Table created successfully..");
+        Paragraph tablePara = new Paragraph("Addresses:");
+        tablePara.add(table);
+        document.add(tablePara);
+
+        Paragraph shipperAdHead = new Paragraph("Shipper Address:");
+        document.add(shipperAdHead);
+        Paragraph shipperAddress = new Paragraph(agreementRequest.getShipperAddress());
+
+        document.add(shipperAddress);
+        Paragraph transporterAdHead = new Paragraph("Transporter Address:");
+        document.add(transporterAdHead);
+        Paragraph transporterAddress = new Paragraph(agreementRequest.getTransporterAddress());
+
+        document.add(transporterAddress);
         Paragraph para1 = new Paragraph("Yours Faithfully");
         para1.setAlignment(Paragraph.ALIGN_RIGHT);
         para1.setSpacingAfter(50);
@@ -246,6 +302,23 @@ public class EmailUtil {
         rectMargin(writer);
         document.add(new Paragraph("Adding a footer to PDF Document using iText."));
         document.close();
+    }
+
+    private static void insertCell(PdfPTable table, String text, int align, int colspan, Font font){
+
+        //create a new cell with the specified Text and Font
+        PdfPCell cell = new PdfPCell(new Phrase(text.trim(), font));
+        //set the cell alignment
+        cell.setHorizontalAlignment(align);
+        //set the cell column span in case you want to merge two or more cells
+        cell.setColspan(colspan);
+        //in case there is no text and you wan to create an empty row
+        if(text.trim().equalsIgnoreCase("")){
+            cell.setMinimumHeight(10f);
+        }
+        //add the call to the table
+        table.addCell(cell);
+
     }
 
 

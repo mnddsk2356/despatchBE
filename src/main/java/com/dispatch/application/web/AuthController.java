@@ -74,7 +74,7 @@ public class AuthController {
         user.setUserPersonalDetails(userrequest.getUserPersonalDetails());
 
         user.setPassword(userrequest.getPassword());
-        user.setRole("USER");
+        user.setRole(userrequest.getRole());
 
 
         // String password = SecurityUtility.randomPassword();

@@ -90,16 +90,12 @@ public  class Users implements UserDetails {
 	}
 
 
-
-
-
-
-	public Company getCompany() {
-		return company;
+	public Branch getBranch() {
+		return branch;
 	}
 
-	public void setCompany(Company company) {
-		this.company = company;
+	public void setBranch(Branch branch) {
+		this.branch = branch;
 	}
 
 	private String status;
@@ -128,9 +124,9 @@ public  class Users implements UserDetails {
 
 	@JsonBackReference
 	@ManyToOne(fetch = FetchType.EAGER,cascade= CascadeType.ALL)
-	@JoinColumn(name = "company_id")
+	@JoinColumn(name = "branch_id")
 
-	private Company company;
+	private Branch branch;
 
 
 	@OneToMany(mappedBy = "user" ,fetch = FetchType.EAGER,cascade= CascadeType.ALL)

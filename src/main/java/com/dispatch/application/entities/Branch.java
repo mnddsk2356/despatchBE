@@ -1,11 +1,14 @@
 package com.dispatch.application.entities;
 
+import com.dispatch.application.model.Users;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.context.annotation.Scope;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name="Branch")
@@ -67,11 +70,28 @@ public class Branch  implements Serializable {
         this.company = company;
     }
 
+    public Set<Users> getStaffList() {
+        return staffList;
+    }
+
+    public void setStaffList(Set<Users> staffList) {
+        this.staffList = staffList;
+    }
+
     @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER,cascade= CascadeType.ALL)
     @JoinColumn(name = "company_id")
 
+
     private Company company;
+
+
+    @OneToMany(mappedBy = "branch" ,fetch = FetchType.EAGER,cascade= CascadeType.ALL)
+    @JsonManagedReference
+
+    private Set<Users> staffList;
+
+   // private Company company;
 
     public int getId() {
         return id;
@@ -98,5 +118,16 @@ public class Branch  implements Serializable {
     }
 
     private String branchLocation;
+
+    public Parking getParking() {
+        return parking;
+    }
+
+    public void setParking(Parking parking) {
+        this.parking = parking;
+    }
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Parking parking;
 
 }

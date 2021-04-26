@@ -1,5 +1,6 @@
 package com.dispatch.application.model;
 
+import com.dispatch.application.entities.Branch;
 import com.dispatch.application.entities.UserBankDetails;
 import com.dispatch.application.entities.UserCompliance;
 import com.dispatch.application.entities.UserPersonalDetails;
@@ -10,7 +11,37 @@ public class StaffRequest {
 
     private Long compId;
 
+    public Long getBranchID() {
+        return branchID;
+    }
+
+    public void setBranchID(Long branchID) {
+        this.branchID = branchID;
+    }
+
+    private Long branchID;
+
+    public Branch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
+    }
+
+    private Branch branch;
+
     private String roleName;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    private String username;
 
     private String password;
 

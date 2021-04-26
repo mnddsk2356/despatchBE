@@ -1,10 +1,12 @@
 package com.dispatch.application.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.context.annotation.Scope;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name="Parking")
@@ -23,11 +25,21 @@ public class Parking implements Serializable {
 
     private Date gateEntryDateTime;
 
+    public int getTotalSpace() {
+        return totalSpace;
+    }
+
+    public void setTotalSpace(int totalSpace) {
+        this.totalSpace = totalSpace;
+    }
+
     private Date  parkingLotEntryDateTime;
 
     private Date bayEntryDateTime;
 
     private Long gateKeeperId;
+
+    private int totalSpace;
 
     public int getId() {
         return id;
@@ -101,13 +113,7 @@ public class Parking implements Serializable {
         this.bayManagerId = bayManagerId;
     }
 
-    public int getParkingLot() {
-        return parkingLot;
-    }
 
-    public void setParkingLot(int parkingLot) {
-        this.parkingLot = parkingLot;
-    }
 
     public int getBayNumber() {
         return bayNumber;
@@ -121,12 +127,23 @@ public class Parking implements Serializable {
 
     private Long bayManagerId;
 
-    private int parkingLot;
+
 
     private int bayNumber;
 
 
+    public Set<ParkingLotMap> getParkingLotMapSet() {
+        return parkingLotMapSet;
+    }
 
+    public void setParkingLotMapSet(Set<ParkingLotMap> parkingLotMapSet) {
+        this.parkingLotMapSet = parkingLotMapSet;
+    }
+
+    @OneToMany(mappedBy = "parking" ,fetch = FetchType.EAGER,cascade= CascadeType.ALL)
+    @JsonManagedReference
+
+    private Set<ParkingLotMap> parkingLotMapSet;
 
 
 

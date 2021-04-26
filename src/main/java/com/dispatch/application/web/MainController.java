@@ -11,6 +11,7 @@ import com.dispatch.application.service.QuoteService;
 import com.dispatch.application.util.DateFormatter;
 import com.dispatch.application.util.EmailUtil;
 import com.dispatch.application.util.FileUploadUtil;
+import com.dispatch.application.util.RandomBooking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,10 @@ public class MainController {
 	QuoteService quoteService;
 	@Autowired
 	UserRepository userRepository;
-
+	@Autowired
+	ShippmentBookingRepository shippmentBookingRepository;
+	@Autowired
+	BranchRepository  branchRepository;
 
 
 	@GetMapping
@@ -152,6 +156,7 @@ public class MainController {
 		LOG.info("Company {}", company);
 		Set<CompanyCompliance> companyComplianceHashSet = new HashSet<CompanyCompliance>();
 		Set<Users> staffList = new HashSet<Users>();
+		Set<Branch> branchSet = new HashSet<Branch>();
 
 		Company companyDB = companyService.findByCompanyLoginName(company.getCompanyLoginName());
 		if(companyDB!=null) {
@@ -178,15 +183,16 @@ public class MainController {
 
 		}
 
-		for (Users user: company.getStaffList()) {
+		for (Branch branch: company.getBranch()) {
 
-			user.setCompany(companyDB);
-			staffList.add(user);
+			branch.setCompany(companyDB);
+			branchSet.add(branch);
 
 		}
 
 		companyDB.setCompanyComplianceList(companyComplianceHashSet);
-		companyDB.setStaffList(staffList);
+		//companyDB.setStaffList(staffList);
+		companyDB.setBranch(branchSet);
 
 		companyService.save(companyDB);
 		//companyReq = company;
@@ -502,10 +508,13 @@ public class MainController {
 
 	public String  addStaffs(@RequestBody StaffRequest staffRequest){
 
-		Company company = companyService.findByCompanyById(staffRequest.getCompId());
+		//Company company = companyService.findByCompanyById(staffRequest.getCompId());
+
+		Branch branchList = branchRepository.findById(staffRequest.getBranchID().intValue()).get();
 
 		Users user = new Users();
-		Set<Users> staffList = company.getStaffList().size()>0?company.getStaffList():new HashSet<>();
+		Set<Users> staffList = branchList.getStaffList().size()>0? branchList.getStaffList():new HashSet<>();
+		//Set<Branch> branchSet = company.getBranch().size()>0?company.getBranch():new HashSet<>();
 		List<UserCompliance> userComplianceList = new ArrayList<>();
 		user.setUserPersonalDetails(staffRequest.getUserPersonalDetails());
 		user.setUserBankDetails(staffRequest.getUserBankDetails());
@@ -517,13 +526,15 @@ public class MainController {
 		}
 		user.setUserComplainceList(userComplianceList);
 		user.setRole(staffRequest.getRoleName());
+		user.setUsername(staffRequest.getUsername());
 		String encryptedPassword = SecurityUtility.passwordEncoder().encode(staffRequest.getPassword());
 		user.setPassword(encryptedPassword);
-		user.setCompany(company);
+		user.setBranch(branchList);
 		staffList.add(user);
-		company.setStaffList(staffList);
-
-		companyService.save(company);
+		//company.setStaffList(staffList);
+		branchList.setStaffList(staffList);
+		branchRepository.save(branchList);
+		//companyService.save(company);
 
 		return "Employee added successfully";
 
@@ -572,6 +583,17 @@ public class MainController {
 
 	}
 
+	@GetMapping(value="getIntendBidsByDest/{dest}")
+
+	public List<BidMaster> getIntendBidsBySrcDest(@PathVariable("dest") String dest ){
+
+		List<BidMaster> bidMasterList = bidService.getBidList().stream().
+				filter(bid->bid.getStatus().equals("Accepted") && bid.getShipTo().equalsIgnoreCase(dest)).collect(Collectors.toList());
+		LOG.info("List of Intended Bids {} ",bidMasterList.size());
+		return bidMasterList;
+
+	}
+
 	@GetMapping(value="processAgreementByBidId/{bidId}")
 
 	public ResponseEntity<String> processAgreementByBidId(@PathVariable("bidId") Long bidId){
@@ -593,11 +615,16 @@ public class MainController {
 			agreementRequest.setAmount(quote.getNegotiatePrice()!=null?
 					quote.getNegotiatePrice():quote.getQuotePrice());
 			Company company = companyService.findByCompanyById(quote.getQuoteById());
+			quote.setQuoteStatus("Aggrement Processed");
+			quoteService.save(quote);
+			Company company1 = companyService.findByCompanyById(bidMaster.getBidBy().getId());
 			agreementRequest.setTransporterComp(company.getCompanyName());
 			agreementRequest.setTransporterCompEmail(company.getEmail());
 			agreementRequest.setTripAssigned(quote.getTripAssigned());
 			agreementRequest.setFromDate(bidMaster.getContractStDt());
 			agreementRequest.setToDate(bidMaster.getContrcatEndDt());
+			agreementRequest.setShipperAddress(company1.getCompAddress());
+			agreementRequest.setTransporterAddress(company.getCompAddress());
 			EmailUtil.sendAgreement(agreementRequest);
 
 
@@ -606,7 +633,164 @@ public class MainController {
   return new ResponseEntity<>("Success",HttpStatus.OK);
 
 	}
-	
+
+	@GetMapping(value="/getIntend")
+	public List<Quote>  getIntend(){
+
+		List<Quote> quoteList = quoteService.quoteList().stream().filter(x->x.getQuoteStatus().equals("Aggrement Processed")).collect(Collectors.toList());
+
+		return quoteList;
+
+	}
+
+	@GetMapping(value="/getAcceptedQuotesByBidId/{bidID}")
+	public List<Quote>  getAcceptedQuotesByBidId(@PathVariable("bidID") Long bidID){
+
+		List<Quote> quoteList = quoteService.quoteList().stream().filter(x->x.getQuoteStatus().equals("Accepted") && x.getBidMaster().getId()==bidID).collect(Collectors.toList());
+
+		return quoteList;
+
+	}
+
+	@PostMapping(value="/createBooking/{bidId}")
+	public ShipmentBooking  addBranchToCompany(@PathVariable("bidId") Long bidId , @RequestBody  ShipmentBooking shipmentBooking  ) {
+
+		BidMaster bidMaster = bidRepository.findById(bidId.intValue()).get();
+		List<Users> usersList = userRepository.findAll().stream().filter(x->x.getBranch().getId()==shipmentBooking.getTargetBranchId()).collect(Collectors.toList());
+
+		List<Users> gateKeeper  = usersList.stream().filter(x->x.getRole().equalsIgnoreCase("GateKeeper")).collect(Collectors.toList());
+		Long gateKeeperId = gateKeeper.get(0).getId();
+		List<Users> yardManager  = usersList.stream().filter(x->x.getRole().equalsIgnoreCase("YardManager")).collect(Collectors.toList());
+		Long yardManagerId = yardManager.get(0).getId();
+		List<Users> bayManager  = usersList.stream().filter(x->x.getRole().equalsIgnoreCase("BayManager")).collect(Collectors.toList());
+		Long bayManagerId = bayManager.get(0).getId();
+		List<Users> logisticOfficer  = usersList.stream().filter(x->x.getRole().equalsIgnoreCase("LogisticOfficer")).collect(Collectors.toList());
+		Long logisticOfficerId = logisticOfficer.get(0).getId();
+		List<Users> financeExecutive  = usersList.stream().filter(x->x.getRole().equalsIgnoreCase("FinanceExecutive")).collect(Collectors.toList());
+		Long financeExecutiveId = financeExecutive.get(0).getId();
+
+		ShipmentBooking shipbook = null;
+		if(!bidMaster.getStatus().equals("In Progress")) {
+			Audit audit = new Audit();
+			audit.setAudit_event("Booking Started " + bidId);
+			audit.setDate_created(new Date());
+			shipmentBooking.setSource(bidMaster.getShipFrom());
+			shipmentBooking.setDestination(bidMaster.getShipTo());
+			shipmentBooking.setStatus("Started");
+			shipmentBooking.setBookingStartDate(new Date());
+			shipmentBooking.setGateKeeperId(gateKeeperId);
+			shipmentBooking.setYardManagerId(yardManagerId);
+			shipmentBooking.setLogisticOfficerId(logisticOfficerId);
+			shipmentBooking.setBayManagerId(bayManagerId);
+			shipmentBooking.setFinanceExecutiveId(financeExecutiveId);
+			shipmentBooking.setAudit(audit);
+			shipmentBooking.setBookingNumber(RandomBooking.getAlphaNumericString(10));
+
+			 shipbook = shippmentBookingRepository.save(shipmentBooking);
+			bidMaster.setStatus("In Progress");
+			bidRepository.save(bidMaster);
+		}else{
+			shipbook = new ShipmentBooking();
+			shipbook.setComment("Booking Already Started");
+		}
+
+return shipbook;
+	}
+
+
+	@PostMapping(value="/createParkingByBranchID/{branchID}")
+
+	public Branch createParkingByBranchID(@PathVariable("branchID") int branchID , @RequestBody Parking parking ){
+
+	List<Branch> branchList = branchRepository.findAll().stream().filter(x->x.getId()==branchID).collect(Collectors.toList());
+	Branch branch = branchList.get(0);
+		Set<ParkingLotMap> parkingLotMapList = new HashSet<>();
+		for(int i=0;i<parking.getTotalSpace();i++){
+			ParkingLotMap plm = new ParkingLotMap();
+			plm.setParkingNumber(i+1);
+			plm.setStatus("Available");
+			plm.setParking(parking);
+			parkingLotMapList.add(plm);
+		}
+		parking.setParkingLotMapSet(parkingLotMapList);
+		branch.setParking(parking);
+		branchRepository.save(branch);
+		return branch;
+	}
+
+	@PostMapping(value="/updateBooking/{bookID}")
+
+	public String updateBooking(@PathVariable("bookID") String bookID ,@RequestBody  ShipmentBooking shipmentBooking ){
+
+		List<ShipmentBooking> shipmentBooking1 = shippmentBookingRepository.findAll().stream().filter(x->x.getBookingNumber().equals(bookID)).collect(Collectors.toList());
+		ShipmentBooking shipmentBookObj = shipmentBooking1.get(0);
+		shipmentBookObj.setStatus(shipmentBooking.getStatus());
+		int destinationBranchID = shipmentBookObj.getTargetBranchId();
+
+		switch(shipmentBooking.getStatus()){
+
+			case "Reached_Destination":
+				shipmentBookObj.setComment(shipmentBooking.getComment());
+				sendNotification(shipmentBookObj.getGateKeeperId());
+				shipmentBookObj.setArrivalDateTime(new Date());
+				shippmentBookingRepository.save(shipmentBookObj);
+				break;
+			case "Inside_Parking":
+				Set<ParkingLotMap> parkingLotMapList = branchRepository.findById(destinationBranchID).get().getParking().getParkingLotMapSet().stream().filter(x->x.getStatus().equals("Available")).collect(Collectors.toSet());
+				Set<ParkingLotMap> parkingLotMapListUp = new HashSet();
+				ParkingLotMap plm = null;
+
+
+
+				sendNotification(shipmentBookObj.getYardManagerId());
+				shippmentBookingRepository.save(shipmentBookObj);
+				break;
+
+			case "Inside_Bay":
+				sendNotification(shipmentBookObj.getBayManagerId());
+				shippmentBookingRepository.save(shipmentBookObj);
+				break;
+			case "Delivered":
+				shipmentBookObj.setComment(shipmentBooking.getComment());
+				shipmentBookObj.setRelaesedFromBayDateTime(new Date());
+				sendNotification(shipmentBookObj.getLogisticOfficerId());
+				shippmentBookingRepository.save(shipmentBooking1.get(0));
+				break;
+			case "Process_Payment":
+				shipmentBookObj.setComment(shipmentBooking.getComment());
+				shipmentBookObj.setAmountPaid(shipmentBookObj.getAmountPaid());
+				sendNotification(shipmentBookObj.getFinanceExecutiveId());
+				shippmentBookingRepository.save(shipmentBookObj);
+				break;
+			case "Generate_Invoice":
+
+				generateBill(bookID);
+				shippmentBookingRepository.save(shipmentBookObj);
+				break;
+
+
+
+
+
+
+		}
+
+return "Updated successfully to "+shipmentBookObj.getStatus();
+
+	}
+
+	private void generateBill(String bookID){
+		LOG.info("Generated Invoice for bookingNumber ",bookID);
+	}
+
+	private void sendNotification(Long roleID) {
+
+		List<Users> users =userRepository.findAll().stream().filter(x->x.getId()==roleID).collect(Collectors.toList());
+
+
+		LOG.info("Notification sent to {} with email{} ",users.get(0).getRole(),users.get(0).getUserPersonalDetails().getEmail());
+	}
+
 	@PostMapping(value="/addBranch/{compId}")
 	public Company addBranchToCompany(@PathVariable("compId") Long compId , @RequestBody  BranchRequest branchRequest  ) {
 
